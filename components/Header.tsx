@@ -112,7 +112,7 @@ const Header = () => {
           <input
             type="text"
             placeholder="Search in site"
-            className="p-2 w-64 rounded-lg border border-black/30 text-sm text-black/50 font-roboto"
+            className="p-2 w-[338px] rounded-lg border border-black/30 text-sm text-black/50 font-roboto"
           />
           <button className="absolute right-3">
             <svg
