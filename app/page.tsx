@@ -1,14 +1,13 @@
 import Hero from '@/components/Hero';
 import Header from '../components/Header';
+import MainContent from '@/components/MainContent';
 
 export default function Home() {
   return (
-    <main>
+    <main className='bg-[#F9FAFB]'>
       <Header />
       <Hero />
-      <section className="p-4">
-        <h2 className="text-xl">Welcome to my website!</h2>
-      </section>
+      <MainContent />
     </main>
   );
 }
