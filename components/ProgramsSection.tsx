@@ -87,10 +87,44 @@ const ProgramsSection: React.FC = () => {
   ];
 
   return (
-    <section className="programs-section container mx-auto px-4 py-12">
+    <section className="programs-section container mx-auto px-4 py-16">
       <h2 className="text-3xl font-bold text-center text-black mb-8">
         Our Programs
       </h2>
+      <div className="flex justify-end mb-6">
+        <a
+          href="#"
+          className="inline-flex items-center gap-2 pr-1 text-green-700 hover:text-green-800 transition-colors"
+        >
+          <span className="font-['Inter'] leading-normal">
+            Explore Programs
+          </span>
+          <div className="flex justify-center items-center h-4">
+            <svg
+              width={15}
+              height={17}
+              viewBox="0 0 15 17"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g clipPath="url(#clip0_83_404)">
+                <path
+                  d="M14.1438 9.30637C14.5344 8.91575 14.5344 8.28137 14.1438 7.89075L9.14375 2.89075C8.75313 2.50012 8.11875 2.50012 7.72813 2.89075C7.3375 3.28137 7.3375 3.91575 7.72813 4.30637L11.025 7.60012H1.4375C0.884375 7.60012 0.4375 8.047 0.4375 8.60012C0.4375 9.15325 0.884375 9.60012 1.4375 9.60012H11.0219L7.73125 12.8939C7.34062 13.2845 7.34062 13.9189 7.73125 14.3095C8.12187 14.7001 8.75625 14.7001 9.14688 14.3095L14.1469 9.3095L14.1438 9.30637Z"
+                  fill="currentColor"
+                />
+              </g>
+              <defs>
+                <clipPath id="clip0_83_404">
+                  <path
+                    d="M0.4375 0.600098H14.4375V16.6001H0.4375V0.600098Z"
+                    fill="white"
+                  />
+                </clipPath>
+              </defs>
+            </svg>
+          </div>
+        </a>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 justify-center">
         {programs.map((program, index) => (
           <div
@@ -110,32 +144,8 @@ const ProgramsSection: React.FC = () => {
                 className="inline-flex items-center gap-2 pr-1 text-green-700 hover:text-green-800 transition-colors"
               >
                 <span className="font-['Inter'] leading-normal">
-                  Learn more
+                  Learn More →
                 </span>
-                <div className="flex justify-center items-center h-4">
-                  <svg
-                    width={15}
-                    height={17}
-                    viewBox="0 0 15 17"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <g clipPath="url(#clip0_83_404)">
-                      <path
-                        d="M14.1438 9.30637C14.5344 8.91575 14.5344 8.28137 14.1438 7.89075L9.14375 2.89075C8.75313 2.50012 8.11875 2.50012 7.72813 2.89075C7.3375 3.28137 7.3375 3.91575 7.72813 4.30637L11.025 7.60012H1.4375C0.884375 7.60012 0.4375 8.047 0.4375 8.60012C0.4375 9.15325 0.884375 9.60012 1.4375 9.60012H11.0219L7.73125 12.8939C7.34062 13.2845 7.34062 13.9189 7.73125 14.3095C8.12187 14.7001 8.75625 14.7001 9.14688 14.3095L14.1469 9.3095L14.1438 9.30637Z"
-                        fill="currentColor"
-                      />
-                    </g>
-                    <defs>
-                      <clipPath id="clip0_83_404">
-                        <path
-                          d="M0.4375 0.600098H14.4375V16.6001H0.4375V0.600098Z"
-                          fill="white"
-                        />
-                      </clipPath>
-                    </defs>
-                  </svg>
-                </div>
               </a>
             </div>
           </div>
