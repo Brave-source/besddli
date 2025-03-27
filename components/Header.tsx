@@ -152,10 +152,22 @@ const Header = () => {
           </Link>
 
           <div className="pt-4 flex flex-col space-y-4">
-            <Button variant="outline" size="md" onClick={closeMenu}>
+            <Button
+              variant="outline"
+              size="md"
+              onClick={closeMenu}
+              href="/login"
+            >
               Login
             </Button>
-            <Button variant="primary" size="md" onClick={closeMenu}>
+
+            <Button
+              variant="primary"
+              size="md"
+              onClick={closeMenu}
+              as={Link}
+              href="/donate"
+            >
               Donate
             </Button>
           </div>
@@ -273,12 +285,16 @@ const Header = () => {
 
       {/* CTA Buttons */}
       <div className="hidden md:flex items-center space-x-4">
-        <Button variant="outline" size="md">
-          Login
-        </Button>
-        <Button variant="primary" size="md">
-          Donate
-        </Button>
+        <Link href="/login">
+          <Button variant="outline" size="md" onClick={closeMenu}>
+            Login
+          </Button>
+        </Link>
+        <Link href="/donate">
+          <Button variant="primary" size="md" onClick={closeMenu}>
+            Donate
+          </Button>
+        </Link>
       </div>
     </header>
   );
