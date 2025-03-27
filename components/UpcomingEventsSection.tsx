@@ -13,8 +13,8 @@ interface Event {
 
 const UpcomingEventsSection: React.FC = () => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
   
   // Sample events data
   const events: Event[] = [
@@ -50,11 +50,6 @@ const UpcomingEventsSection: React.FC = () => {
     },
   ];
 
-  // Calculate total pages
-  useEffect(() => {
-    setTotalPages(Math.ceil(events.length / 3));
-  }, [events.length]);
-
   // Common calendar icon for all events
   const calendarIcon = (
     <div className="flex flex-col justify-center self-stretch overflow-hidden text-black text-center font-['Roboto'] text-[3.875rem] leading-[100px]">
@@ -62,24 +57,42 @@ const UpcomingEventsSection: React.FC = () => {
     </div>
   );
 
-  // Handle scrolling
-  const scrollToPage = (pageIndex: number) => {
-    if (pageIndex >= 0 && pageIndex < totalPages) {
-      setCurrentPage(pageIndex);
-      const el = scrollContainerRef.current;
-      if (el) {
-        const scrollAmount = el.offsetWidth * pageIndex;
-        el.scrollTo({ left: scrollAmount, behavior: 'smooth' });
-      }
+  // Check scroll position to update navigation arrows
+  const checkScroll = () => {
+    const container = scrollContainerRef.current;
+    if (container) {
+      setCanScrollLeft(container.scrollLeft > 0);
+      setCanScrollRight(
+        container.scrollLeft < container.scrollWidth - container.clientWidth - 10
+      );
     }
   };
 
-  const nextPage = () => {
-    scrollToPage(currentPage + 1);
-  };
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (container) {
+      container.addEventListener('scroll', checkScroll);
+      // Initial check
+      checkScroll();
+      
+      // Check again after images might have loaded
+      window.addEventListener('resize', checkScroll);
+      
+      return () => {
+        container.removeEventListener('scroll', checkScroll);
+        window.removeEventListener('resize', checkScroll);
+      };
+    }
+  }, []);
 
-  const prevPage = () => {
-    scrollToPage(currentPage - 1);
+  // Handle scrolling
+  const scrollToDirection = (direction: 'left' | 'right') => {
+    const container = scrollContainerRef.current;
+    if (container) {
+      const cardWidth = container.querySelector('.event-card-container')?.clientWidth || 300;
+      const scrollAmount = direction === 'left' ? -cardWidth : cardWidth;
+      container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
   };
 
   return (
@@ -89,48 +102,61 @@ const UpcomingEventsSection: React.FC = () => {
           Upcoming Events
         </h2>
         
-        <div className="relative px-20">
-          {/* Left arrow navigation */}
-          {currentPage > 0 && (
+        <div className="relative px-10 md:px-20">
+          {canScrollLeft && (
             <div className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10">
-              <NavigationArrow direction="left" onNavigate={prevPage} />
+              <NavigationArrow 
+                direction="left" 
+                onNavigate={() => scrollToDirection('left')} 
+              />
             </div>
           )}
           
-          {/* Scrollable container limited to 3 cards on large screens */}
+          {/* Scrollable container with events in a row */}
           <div 
             ref={scrollContainerRef}
-            className="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar"
-            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            className="flex overflow-x-auto space-x-6 pb-6 snap-x hide-scrollbar"
+            style={{ 
+              scrollbarWidth: 'none', 
+              msOverflowStyle: 'none',
+              WebkitOverflowScrolling: 'touch' 
+            }}
           >
-            {/* Group events into pages of 3 */}
-            {Array.from({ length: totalPages }).map((_, pageIndex) => (
+            {events.map((event) => (
               <div 
-                key={pageIndex} 
-                className="flex-shrink-0 w-full grid grid-cols-1 md:grid-cols-3 gap-8 snap-start"
+                key={event.id} 
+                className="event-card-container flex-shrink-0 w-80 snap-center"
               >
-                {events.slice(pageIndex * 3, (pageIndex + 1) * 3).map((event) => (
-                  <div key={event.id} className="p-3">
-                    <EventCard
-                      title={event.title}
-                      date={event.date}
-                      location={event.location}
-                      icon={calendarIcon}
-                    />
-                  </div>
-                ))}
+                <EventCard
+                  title={event.title}
+                  date={event.date}
+                  location={event.location}
+                  icon={calendarIcon}
+                />
               </div>
             ))}
           </div>
           
-          {/* Right arrow navigation */}
-          {currentPage < totalPages - 1 && (
+          {canScrollRight && (
             <div className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10">
-              <NavigationArrow direction="right" onNavigate={nextPage} />
+              <NavigationArrow 
+                direction="right" 
+                onNavigate={() => scrollToDirection('right')} 
+              />
             </div>
           )}
         </div>
       </div>
+
+      <style jsx global>{`
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .hide-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
     </section>
   );
 };
