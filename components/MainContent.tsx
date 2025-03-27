@@ -4,6 +4,8 @@ import Button from "./Button";
 import ProgramsSection from "./ProgramsSection";
 import { MetricCard, ProjectCard } from "./Card";
 import UpcomingEventsSection from "./UpcomingEventsSection";
+import FAQSection from "./FAQItem";
+import Footer from "./Footer";
 
 interface Project {
   id: number;
@@ -639,34 +641,71 @@ const MainContent: React.FC = () => {
         </div>
       </section>
 
-      <section className="news-letter">
-        <div className="newsletter flex justify-center items-center self-stretch pt-[0.4375rem] pl-[2.5625rem] pb-3 pr-6 h-[10.25rem]">
-          <div className="flex flex-col items-center w-[676px]">
-            <div className="self-stretch text-black font-['Roboto'] text-lg font-semibold leading-[100%]">
-              Subscribe to Updates
+      <section className="news-letter bg-gray-50">
+        <div className="container mx-auto max-w-6xl">
+          {/* Newsletter Section */}
+          <div className="flex flex-col md:flex-row justify-between items-center py-8 px-6">
+            <div className="w-full md:w-1/2 mb-6 md:mb-0">
+              <h3 className="text-black font-['Roboto'] text-lg font-semibold leading-tight mb-2">
+                Subscribe to Updates
+              </h3>
+              <p className="text-black font-['Roboto'] leading-relaxed">
+                Stay connected with Benue State`s diaspora community.
+              </p>
             </div>
-            <div className="self-stretch text-black font-['Roboto'] leading-[150%]">
-              Stay connected with Benue State`s diaspora community.
-            </div>
-          </div>
-          <div className="flex flex-col items-start gap-3 w-[715px]">
-            <div className="flex items-start gap-4 self-stretch">
-              <div className="type_default__alternate_false flex items-center gap-2 p-3 border border-black placeholder text-[#666] font-['Roboto'] leading-[150%]">
-                Your Email Here
-              </div>
-              <div className="style_secondary__small_false__alternate_false__icon_position_no_icon flex justify-between items-center py-3 px-6 w-[7.4375rem] border border-black bg-[#027a48] text-white font-['Roboto'] leading-[150%]">
-                Join
-              </div>
-            </div>
-            <div className="flex justify-end items-start gap-1 self-stretch">
-              <div className="w-[0.9375rem] h-[0.9375rem] bg-[#d9d9d9]" />
-              <div className="privacy_policy text-black font-['Roboto'] text-xs leading-[150%] underline">
-                By subscribing, you accept our Privacy Policy.
+
+            <div className="w-full md:w-1/2">
+              <div className="flex flex-col space-y-3">
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <input
+                    type="email"
+                    placeholder="Your Email Here"
+                    className="flex-grow p-3 border border-black text-gray-600 font-['Roboto'] leading-normal focus:outline-none"
+                  />
+                  <button className="py-3 px-8 outline-none bg-[#027a48] text-white font-['Roboto'] leading-normal whitespace-nowrap">
+                    Join
+                  </button>
+                </div>
+
+                <div className="flex justify-end items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="privacy-policy"
+                    className="w-4 h-4"
+                  />
+                  <label
+                    htmlFor="privacy-policy"
+                    className="text-black font-['Roboto'] text-xs leading-normal underline cursor-pointer"
+                  >
+                    By subscribing, you accept our Privacy Policy.
+                  </label>
+                </div>
               </div>
             </div>
           </div>
         </div>
+
+        {/* Join Us Section */}
+        <div className="bg-gray-50 py-16">
+          <div className="container mx-auto max-w-4xl px-6">
+            <div className="flex flex-col items-center justify-center text-center">
+              <h2 className="text-black font-['Roboto'] text-[2.5rem] font-bold leading-[120%] mb-2.5">
+                Join Us
+              </h2>
+              <p className="text-black font-['Roboto'] text-lg font-light leading-[150%] mb-10 max-w-2xl mx-auto">
+                Become a part of a growing community of changemakers
+              </p>
+
+              <Button className="px-10 py-4 md:px-16 lg:px-24 rounded-xl bg-green-700 text-white text-center font-['Roboto'] text-2xl md:text-[2.5rem] font-bold leading-[120%] uppercase">
+                REGISTER NOW
+              </Button>
+            </div>
+          </div>
+        </div>
       </section>
+
+      <FAQSection />
+      <Footer />
     </main>
   );
 };
