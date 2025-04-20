@@ -6,6 +6,7 @@ import { MetricCard, ProjectCard } from "./Card";
 import UpcomingEventsSection from "./UpcomingEventsSection";
 import FAQSection from "./FAQItem";
 import Footer from "./Footer";
+import Link from "next/link";
 
 interface Project {
   id: number;
@@ -464,12 +465,13 @@ const MainContent: React.FC = () => {
             </p>
 
             <div className="flex justify-center items-start gap-4 mt-4 self-stretch py-4">
+            <Link href="/register">
               <Button className="flex justify-center items-center px-8 py-4 w-40 h-12 rounded-lg bg-white">
                 <span className="text-green-700 text-center whitespace-nowrap font-inter">
                   Register Now
                 </span>
               </Button>
-
+              </Link>
               <Button className="flex justify-center items-center px-8 py-4 w-40 h-12 rounded-lg border-2 border-white bg-transparent">
                 <span className="text-white text-center font-inter">
                   Learn More
@@ -695,10 +697,11 @@ const MainContent: React.FC = () => {
               <p className="text-black font-['Roboto'] text-lg font-light leading-[150%] mb-10 max-w-2xl mx-auto">
                 Become a part of a growing community of changemakers
               </p>
-
+              <Link href="/register">
               <Button className="px-10 py-4 md:px-16 lg:px-24 rounded-xl bg-green-700 text-white text-center font-['Roboto'] text-2xl md:text-[2.5rem] font-bold leading-[120%] uppercase">
                 REGISTER NOW
               </Button>
+              </Link>
             </div>
           </div>
         </div>

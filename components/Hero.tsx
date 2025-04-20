@@ -1,6 +1,8 @@
 "use client"
 
 import React from 'react';
+import Link from "next/link";
+
 
 const Hero = () => {
   return (
@@ -21,9 +23,11 @@ const Hero = () => {
               knowledge sharing, and cultural preservation.
             </p>
             <div className="flex flex-wrap gap-4">
+            <Link href="/register"> 
               <button className="px-8 py-3 bg-green-700 rounded-lg text-white font-medium hover:bg-green-800 transition">
-                Register Now
+               Register Now 
               </button>
+              </Link>
               <button className="px-8 py-3 bg-white rounded-lg text-green-700 font-medium hover:bg-gray-100 transition">
                 Explore Opportunities
               </button>
