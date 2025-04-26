@@ -13,6 +13,7 @@ type PolymorphicProps<E extends ElementType = ElementType, P = object> = P & {
 type ButtonOwnProps = {
   variant?: "primary" | "secondary" | "outline";
   size?: "sm" | "md" | "lg";
+  rounded?: 'default' | 'full';
   fullWidth?: boolean;
   children: React.ReactNode;
   href?: string;
@@ -26,6 +27,7 @@ export type ButtonProps<E extends ElementType = "button"> = PolymorphicProps<
 const Button = <E extends ElementType = "button">({
   variant = "primary",
   size = "md",
+  rounded="default",
   fullWidth = false,
   children,
   className = "",
@@ -35,7 +37,13 @@ const Button = <E extends ElementType = "button">({
 }: ButtonProps<E>) => {
   // Base styles that apply to all buttons
   const baseStyles =
-    "rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 text-center";
+    "font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 text-center";
+
+   // Rounded styles
+    const roundedStyles = {
+      default: "rounded-lg",
+      full: "rounded-full",
+    };
 
   // Variant-specific styles
   const variantStyles = {
@@ -57,7 +65,7 @@ const Button = <E extends ElementType = "button">({
   const widthStyles = fullWidth ? "w-full" : "";
 
   // Combine all styles
-  const buttonStyles = `${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${widthStyles} ${className}`;
+  const buttonStyles = `${baseStyles} ${variantStyles[variant]} ${roundedStyles[rounded]} ${sizeStyles[size]} ${widthStyles} ${className}`;
 
   // Determine the component to render
   const Component = as || ((href ? Link : "button") as ElementType);
