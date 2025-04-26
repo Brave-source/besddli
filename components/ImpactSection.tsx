@@ -1,7 +1,8 @@
-// components/ImpactSection.tsx
+
 'use client';
 
 import { useRef, useState, useEffect, useCallback } from 'react';
+import SectionHeading from './SectionHeading';
 
 const ImpactSection = () => {
   // Impact data matching your reference
@@ -62,9 +63,9 @@ const ImpactSection = () => {
     <section className="py-16 bg-gray-50">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          <SectionHeading>
             Our Impact
-          </h2>
+          </SectionHeading>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Through strategic partnerships and innovative programs, we{"'"}re making a significant impact on Benue{"'"}s development.
           </p>

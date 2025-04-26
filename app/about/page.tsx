@@ -5,6 +5,9 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CoreValues from '@/components/CoreValues';
 import ImpactSection from '@/components/ImpactSection';
+import CallToAction from "@/components/CallToAction";
+import SectionHeading from '@/components/SectionHeading';
+import Button from '@/components/Button';
 
 
 export default function AboutPage() {
@@ -16,7 +19,7 @@ export default function AboutPage() {
        
         {/* Hero Section */}
         <section className="relative min-h-[80vh] flex items-center justify-center">
-          <div className="absolute inset-0 bg-black/30">
+          <div className="absolute inset-0 bg-black/50">
             <Image
               src="/hero.png"
               alt="Benue landscape"
@@ -30,43 +33,24 @@ export default function AboutPage() {
               <h1 className="text-4xl md:text-4xl font-bold text-white mb-4 leading-tight">
                 Bridging Continents, Empowering Benue: Uniting Diaspora for Growth
               </h1>
-              <p className="text-md text-white/90 mb-8">
+              <p className="text-md text-white/90 mb-12">
                 Connecting our global family for the development of Benue State
               </p>
-              <Link
-                href="/register"
-                className="
-                  inline-block
-                  bg-green-600
-                  hover:bg-green-700
-                  text-white
-                  font-semibold
-                  text-base
-                  px-12
-                  py-3
-                  rounded-full
-                  border-2
-                  border-green-600
-                  hover:border-green-700
-                  transition-colors
-                  duration-200
-                  tracking-wide
-                  shadow-md
-                "
-              >
+              <a href="/joinUs">
+              <Button variant="primary" rounded="full" className="px-20 py-3">
                 Join Us
-              </Link>
+              </Button>
+              </a>
             </div>
           </div>
         </section>
 
 
           {/* Who We Are Section */}
-      <div className="bg-gray-100">
-      <section className="py-12 bg-white">
+      <section className="py-12 bg-gray-100">
         <div className="container mx-auto px-4 max-w-5xl">
           <div className="text-center mb-6">
-            <h2 className="text-3xl font-bold text-gray-900 tracking-tight">Who We Are</h2>
+            <SectionHeading className='tracking-tight'>Who We Are</SectionHeading>
               </div>
                 <div className="space-y-4">
               <p className="text-gray-700 text-base leading-relaxed">
@@ -74,7 +58,7 @@ export default function AboutPage() {
               </p>
               
               <div className="flex items-center space-x-4 pt-2">
-                <div className="flex items-center mb-8">
+                <div className="flex items-center">
                 <svg
           width={38}
           height={31}
@@ -87,11 +71,10 @@ export default function AboutPage() {
             fill="#15803D"
           />
         </svg>
-                  <span className="font-medium text-gray-900">Global Network</span>
-                </div>
+      <span className="font-semibold text-gray-900">Global Network</span>
+    </div>
 
-                <div className="flex items-center mb-8">
-              
+      <div className="flex items-center">     
         <svg
           width={38}
           height={31}
@@ -106,11 +89,11 @@ export default function AboutPage() {
             />
           </g>
         </svg>
-            <span className="font-medium text-gray-900 ml-2">Partnership</span>
-              </div>
-                </div>
+      <span className="font-semibold text-gray-900 ml-2">Partnership</span>
+      </div>
+    </div>
 
-                <div className="text-center w-full">
+                <div className="text-center w-full ">
                 <Link
                   href="/global-network"
                   className="inline-flex items-center text-green-600 hover:text-green-700 font-medium text-base no-underline transition-colors duration-150 group">
@@ -122,10 +105,8 @@ export default function AboutPage() {
                 </div>
               </div>
             </div>
-          
-      
       </section>
-      </div>
+      
 
        {/* Mission & Vision Section */}
        <section className="py-16 bg-white">
@@ -154,7 +135,7 @@ export default function AboutPage() {
                 <div className="flex items-center mb-6">
                   <div className="bg-green-100 p-3 rounded-full mr-4">
                     <Image 
-                      src="/icons/Eye.png" 
+                      src="/icons/eye.png" 
                       alt="Vision icon"
                       width={20}
                       height={20}
@@ -175,8 +156,8 @@ export default function AboutPage() {
         <ImpactSection />
 
         {/* Team Section */}
-        <section className="max-w-full mx-auto px-12 py-12 bg-white">
-          <h2 className="text-3xl text-center font-bold mb-8 text-gray-900 font-sans">Meet Our Team</h2>
+        <section className="max-w-full mx-auto px-12 py-12 bg-gray-100">
+          <SectionHeading>Meet Our Team</SectionHeading>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {teamMembers.map((member) => (
               <div key={member.id} className="bg-white rounded-lg shadow-md overflow-hidden">
@@ -199,9 +180,9 @@ export default function AboutPage() {
         </section>
 
         {/* Global Presence Section */}
-        <section className="py-16 bg-gray-100">
+        <section className="py-16 bg-white">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold mb-12 text-gray-900 text-center">Our Global Presence</h2>
+            <SectionHeading>Our Global Presence</SectionHeading>
             <div className="grid md:grid-cols-3 gap-8">
               <div className="bg-gray-100 p-6 rounded-lg shadow-lg">
                 <h3 className="text-xl text-gray-800 font-semibold mb-4">USA Office</h3>
@@ -223,33 +204,20 @@ export default function AboutPage() {
         </section>
 
         {/* Join Our Global Movement Section */}
-        <section className="py-16 bg-green-800 text-white">
-          <div className="container mx-auto px-4 text-center">
-            <h2 className="text-3xl font-bold mb-6">Join Our Global Movement</h2>
-            <p className="text-xl mb-8">
-              Be part of Benue{"'"}s transformation story. Connect with fellow diaspora members and explore investment opportunities.
-            </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Link 
-                href="/register" 
-                className="bg-white text-green-800 px-6 py-3 rounded-full font-semibold hover:bg-gray-100 transition"
-              >
-                Register Now
-              </Link>
-              <Link 
-                href="/opportunities" 
-                className="bg-transparent border-2 border-white px-6 py-3 rounded-full font-semibold hover:bg-white/10 transition"
-              >
-                Explore Opportunities
-              </Link>
-            </div>
-          </div>
-        </section>
+        
+         <CallToAction
+            title="Join Our Global Movement"
+            subtitle="Be part of Benue's transformation story. Connect with fellow diaspora members and explore investment opportunities."
+            primaryButtonText="Register Now"
+            primaryButtonLink="/register"
+            secondaryButtonText="Explore Opportunities"
+            secondaryButtonLink="/opportunities"
+            />
 
         {/* Partners Section */}
         <section className="py-16 bg-white">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold mb-12 text-gray-900 text-center">Our Sponsors and Partners</h2>
+            <SectionHeading>Our Sponsors and Partners</SectionHeading>
             <div className="flex flex-wrap justify-center gap-8 items-center">
               {partners.map((partner, index) => (
                 <div key={index} className="w-32 h-16 relative">
@@ -284,10 +252,10 @@ const teamMembers = [
 ];
 
 const partners = [
-  "Google",
-  "Benue-logo",
-  "Netflix-logo",
+  "google-logo",
+  "benue-logo",
+  "netflix-logo",
   "world-bank-logo",
-  "Slack-logo",
-  "Spotify-logo",
+  "slack-logo",
+  "spotify-logo",
 ];

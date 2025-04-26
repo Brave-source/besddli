@@ -3,6 +3,7 @@
 
 import { useRef, useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
+import SectionHeading from './SectionHeading';
 
 const CoreValues = () => {
   const values = [
@@ -77,11 +78,11 @@ const CoreValues = () => {
   }, [updateArrows]);
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-gray-100">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-gray-900 text-center mb-12">
+        <SectionHeading>
           Our Core Values
-        </h2>
+        </SectionHeading>
 
         <div className="relative">
           <div 
