@@ -2,29 +2,24 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect, FormEvent, ChangeEvent } from "react";
+import { useState, useEffect, FormEvent, ChangeEvent, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 
-interface LoginFormData {
-  email: string;
-  password: string;
-  rememberMe: boolean;
-}
-
-export default function Login() {
+// Create a client component that uses searchParams
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { login, isAuthenticated, loading, user } = useAuth();
-  const [formData, setFormData] = useState<LoginFormData>({
+  const [formData, setFormData] = useState({
     email: "",
     password: "",
     rememberMe: false
   });
-  const [error, setError] = useState<string>("");
-  const [success, setSuccess] = useState<string>("");
-  const [formLoading, setFormLoading] = useState<boolean>(false);
-  const [authChecked, setAuthChecked] = useState<boolean>(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [formLoading, setFormLoading] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
 
   // Debug: Log auth state
   useEffect(() => {
@@ -62,6 +57,7 @@ export default function Login() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
+        <div className="ml-3 text-gray-700">Checking authentication...</div>
       </div>
     );
   }
@@ -302,5 +298,19 @@ export default function Login() {
         </div>
       </div>
     </div>
+  );
+}
+
+// Main Page Component with Suspense
+export default function Login() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
+        <div className="ml-3 text-gray-700">Loading...</div>
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
   );
 }
