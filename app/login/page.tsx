@@ -1,7 +1,105 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useState, useEffect, FormEvent, ChangeEvent } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
+
+interface LoginFormData {
+  email: string;
+  password: string;
+  rememberMe: boolean;
+}
 
 export default function Login() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { login, isAuthenticated, loading, user } = useAuth();
+  const [formData, setFormData] = useState<LoginFormData>({
+    email: "",
+    password: "",
+    rememberMe: false
+  });
+  const [error, setError] = useState<string>("");
+  const [success, setSuccess] = useState<string>("");
+  const [formLoading, setFormLoading] = useState<boolean>(false);
+  const [authChecked, setAuthChecked] = useState<boolean>(false);
+
+  // Debug: Log auth state
+  useEffect(() => {
+    console.log("Auth state in Login:", {
+      loading,
+      user,
+      token: typeof window !== 'undefined' ? localStorage.getItem('token') : null,
+      isAuthenticated: isAuthenticated(),
+      authChecked
+    });
+  }, [loading, user, isAuthenticated, authChecked]);
+
+  // Check if user is coming from registration and authentication status
+  useEffect(() => {
+    // Only run after auth has finished loading
+    if (!loading) {
+      // Check for registration success
+      const registered = searchParams.get("registered");
+      if (registered === "true") {
+        setSuccess("Registration successful! Please login with your credentials.");
+      }
+      
+      // If already authenticated, redirect to dashboard
+      if (isAuthenticated()) {
+        console.log("Already authenticated, redirecting to dashboard");
+        router.push("/dashboard");
+      }
+      
+      setAuthChecked(true);
+    }
+  }, [searchParams, router, isAuthenticated, loading]);
+
+  // Skip rendering until authentication is checked
+  if (!authChecked) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
+      </div>
+    );
+  }
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value
+    }));
+  };
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setFormLoading(true);
+    setError("");
+    setSuccess("");
+
+    try {
+      const result = await login({
+        email: formData.email,
+        password: formData.password,
+        rememberMe: formData.rememberMe
+      });
+
+      if (result.success) {
+        router.push("/dashboard");
+      } else {
+        setError(result.message || "Login failed. Please try again.");
+      }
+    } catch (err) {
+      setError("Network error. Please try again later.");
+      console.error("Login error:", err);
+    } finally {
+      setFormLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center relative px-4 sm:px-6 lg:px-8">
       {/* Background Image */}
@@ -21,8 +119,20 @@ export default function Login() {
           Login
         </h1>
 
+        {/* Error/Success message display */}
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md text-sm">
+            {error}
+          </div>
+        )}
+        {success && (
+          <div className="mb-4 p-3 bg-green-100 text-green-700 rounded-md text-sm">
+            {success}
+          </div>
+        )}
+
         {/* Login Form */}
-        <form className="space-y-6">
+        <form className="space-y-6" onSubmit={handleSubmit}>
           <div>
             <label
               htmlFor="email"
@@ -35,6 +145,8 @@ export default function Login() {
               name="email"
               type="email"
               required
+              value={formData.email}
+              onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-800 placeholder-gray-500"
               placeholder="Enter your email"
               autoComplete="email"
@@ -53,6 +165,8 @@ export default function Login() {
               name="password"
               type="password"
               required
+              value={formData.password}
+              onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
               placeholder="Enter your password"
               autoComplete="current-password"
@@ -62,13 +176,15 @@ export default function Login() {
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
             <div className="flex items-center">
               <input
-                id="remember-me"
-                name="remember-me"
+                id="rememberMe"
+                name="rememberMe"
                 type="checkbox"
+                checked={formData.rememberMe}
+                onChange={handleChange}
                 className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded cursor-pointer"
               />
               <label
-                htmlFor="remember-me"
+                htmlFor="rememberMe"
                 className="ml-2 block text-sm text-gray-800"
               >
                 Remember me
@@ -83,14 +199,13 @@ export default function Login() {
           </div>
 
           <div>
-            <Link href="#">
-              <button
-                type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
-              >
-                Sign in
-              </button>
-            </Link>
+            <button
+              type="submit"
+              disabled={formLoading}
+              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:bg-green-400"
+            >
+              {formLoading ? "Signing in..." : "Sign in"}
+            </button>
           </div>
         </form>
 
