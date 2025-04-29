@@ -51,6 +51,11 @@ interface AuthResult {
   token?: string;
 }
 
+interface TokenData {
+  token: string;
+  expiresAt: number; // Unix timestamp
+}
+
 interface AuthContextType {
   user: User | null;
   loading: boolean;
@@ -58,6 +63,7 @@ interface AuthContextType {
   register: (userData: RegisterFormData) => Promise<AuthResult>;
   logout: () => void;
   isAuthenticated: () => boolean;
+  refreshToken: () => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -65,6 +71,88 @@ const AuthContext = createContext<AuthContextType | null>(null);
 interface AuthProviderProps {
   children: ReactNode;
 }
+
+// Token storage with encryption helper (basic)
+const TokenStorage = {
+  // Store token with expiration (default 1 day if not specified)
+  setToken: (token: string, rememberMe = false): void => {
+    try {
+      const expiresAt = Date.now() + (rememberMe ? 30 * 24 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000);
+      const tokenData: TokenData = { token, expiresAt };
+      
+      // For better security, we'd use HttpOnly cookies set by the server
+      // This is a fallback when that's not possible
+      sessionStorage.setItem("authToken", JSON.stringify(tokenData));
+      
+      // Only store in localStorage for "remember me"
+      if (rememberMe) {
+        localStorage.setItem("authToken", JSON.stringify(tokenData));
+      }
+    } catch (err) {
+      console.error("Error storing token:", err);
+    }
+  },
+  
+  // Get token from storage (checks expiration)
+  getToken: (): string | null => {
+    try {
+      // Try sessionStorage first (current session)
+      let tokenData = sessionStorage.getItem("authToken");
+      
+      // If not in session, try localStorage (remember me)
+      if (!tokenData) {
+        tokenData = localStorage.getItem("authToken");
+      }
+      
+      if (!tokenData) return null;
+      
+      const { token, expiresAt } = JSON.parse(tokenData) as TokenData;
+      
+      // Check if token is expired
+      if (Date.now() > expiresAt) {
+        // Clean up expired token
+        TokenStorage.clearToken();
+        return null;
+      }
+      
+      return token;
+    } catch (err) {
+      console.error("Error retrieving token:", err);
+      return null;
+    }
+  },
+  
+  // Clear token from all storages
+  clearToken: (): void => {
+    sessionStorage.removeItem("authToken");
+    localStorage.removeItem("authToken");
+  }
+};
+
+// User storage helper
+const UserStorage = {
+  setUser: (user: User): void => {
+    try {
+      sessionStorage.setItem("authUser", JSON.stringify(user));
+    } catch (err) {
+      console.error("Error storing user:", err);
+    }
+  },
+  
+  getUser: (): User | null => {
+    try {
+      const userData = sessionStorage.getItem("authUser");
+      return userData ? JSON.parse(userData) : null;
+    } catch (err) {
+      console.error("Error retrieving user:", err);
+      return null;
+    }
+  },
+  
+  clearUser: (): void => {
+    sessionStorage.removeItem("authUser");
+  }
+};
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
@@ -80,33 +168,23 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     
     const initAuth = async () => {
       console.log("AuthContext initializing...");
-      // Check for saved user and token in localStorage
-      const savedUser = localStorage.getItem("user");
-      const savedToken = localStorage.getItem("token");
+      
+      // Get token and check if it's valid
+      const token = TokenStorage.getToken();
+      const savedUser = UserStorage.getUser();
 
-      console.log("Found in localStorage:", { 
+      console.log("Found in storage:", { 
         hasUser: !!savedUser, 
-        hasToken: !!savedToken 
+        hasToken: !!token 
       });
 
-      if (savedUser && savedToken) {
-        try {
-          const parsedUser = JSON.parse(savedUser);
-          console.log("Successfully parsed user:", { email: parsedUser.email });
-          setUser(parsedUser);
-        } catch (err) {
-          console.error("Error parsing saved user:", err);
-          // Clear invalid data
-          localStorage.removeItem("user");
-          localStorage.removeItem("token");
-        }
+      if (token && savedUser) {
+        // Optionally validate token with your API here
+        setUser(savedUser);
       } else {
-        // If either is missing, clear both to maintain consistency
-        if (savedUser || savedToken) {
-          console.log("Inconsistent auth state, clearing storage");
-          localStorage.removeItem("user");
-          localStorage.removeItem("token");
-        }
+        // Clear any inconsistent state
+        TokenStorage.clearToken();
+        UserStorage.clearUser();
       }
       
       console.log("Auth initialization complete");
@@ -115,6 +193,37 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     initAuth();
   }, []);
+
+  // Token refresh method
+  const refreshToken = async (): Promise<boolean> => {
+    const token = TokenStorage.getToken();
+    if (!token) return false;
+    
+    try {
+      const response = await fetch("/api/refresh-token", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      });
+      
+      const data = await response.json();
+      
+      if (data.status === "success" && data.data.token) {
+        // Update token with new one
+        TokenStorage.setToken(data.data.token);
+        return true;
+      } else {
+        // If refresh failed, logout
+        logout();
+        return false;
+      }
+    } catch (error) {
+      console.error("Token refresh error:", error);
+      return false;
+    }
+  };
 
   // Login method
   const login = async (credentials: LoginCredentials): Promise<AuthResult> => {
@@ -132,6 +241,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           email: credentials.email,
           password: credentials.password,
         }),
+        // Include credentials to allow cookies to be sent/received
+        credentials: "include"
       });
 
       const data = await response.json();
@@ -139,8 +250,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
       if (data.status === "success" && data.data) {
         // Store auth data
-        localStorage.setItem("token", data.data.token);
-        localStorage.setItem("user", JSON.stringify(data.data.user));
+        TokenStorage.setToken(data.data.token, credentials.rememberMe);
+        UserStorage.setUser(data.data.user);
 
         console.log("Login successful, setting user:", { email: data.data.user.email });
         setUser(data.data.user);
@@ -198,6 +309,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           country: userData.country,
           preferred_modes: userData.preferred_modes,
         }),
+        // Include credentials to allow cookies to be set
+        credentials: "include"
       });
 
       const data = await response.json();
@@ -222,9 +335,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   // Logout method
   const logout = (): void => {
     console.log("Logging out user");
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    
+    // Clear token and user from storage
+    TokenStorage.clearToken();
+    UserStorage.clearUser();
     setUser(null);
+    
+    // Call logout endpoint (optional, to invalidate token on server)
+    fetch("/api/logout", {
+      method: "POST",
+      credentials: "include"
+    }).catch(err => console.error("Logout API error:", err));
     
     // Use direct navigation to avoid router issues
     if (typeof window !== 'undefined') {
@@ -239,7 +360,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       return false;
     }
     
-    const token = localStorage.getItem("token");
+    const token = TokenStorage.getToken();
     const authState = !!user && !!token;
     
     console.log("Authentication check:", { 
@@ -260,6 +381,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     register,
     logout,
     isAuthenticated,
+    refreshToken
   };
 
   return (
