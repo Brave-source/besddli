@@ -78,21 +78,22 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       return;
     }
     
-    const initAuth = () => {
-      console.log("Initializing auth state...");
+    const initAuth = async () => {
+      console.log("AuthContext initializing...");
       // Check for saved user and token in localStorage
       const savedUser = localStorage.getItem("user");
       const savedToken = localStorage.getItem("token");
-      
-      console.log("Initial auth check:", { 
+
+      console.log("Found in localStorage:", { 
         hasUser: !!savedUser, 
         hasToken: !!savedToken 
       });
 
       if (savedUser && savedToken) {
         try {
-          setUser(JSON.parse(savedUser));
-          console.log("User loaded from localStorage");
+          const parsedUser = JSON.parse(savedUser);
+          console.log("Successfully parsed user:", { email: parsedUser.email });
+          setUser(parsedUser);
         } catch (err) {
           console.error("Error parsing saved user:", err);
           // Clear invalid data
@@ -102,11 +103,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       } else {
         // If either is missing, clear both to maintain consistency
         if (savedUser || savedToken) {
-          console.log("Inconsistent auth state, clearing...");
+          console.log("Inconsistent auth state, clearing storage");
           localStorage.removeItem("user");
           localStorage.removeItem("token");
         }
       }
+      
+      console.log("Auth initialization complete");
       setLoading(false);
     };
 
@@ -115,38 +118,40 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   // Login method
   const login = async (credentials: LoginCredentials): Promise<AuthResult> => {
+    console.log("Login attempt with:", credentials.email);
     try {
       setLoading(true);
 
-      const response = await fetch(
-        "https://www.errandsplus.ng/bess_api/api/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: credentials.email,
-            password: credentials.password,
-          }),
-        }
-      );
+      // Use API proxy to avoid CORS issues
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: credentials.email,
+          password: credentials.password,
+        }),
+      });
 
       const data = await response.json();
+      console.log("Login API response status:", data.status);
 
       if (data.status === "success" && data.data) {
         // Store auth data
         localStorage.setItem("token", data.data.token);
         localStorage.setItem("user", JSON.stringify(data.data.user));
 
+        console.log("Login successful, setting user:", { email: data.data.user.email });
         setUser(data.data.user);
-
+        
         return {
           success: true,
           user: data.data.user,
           token: data.data.token,
         };
       } else {
+        console.log("Login failed:", data.message);
         return {
           success: false,
           message: data.message || "Login failed",
@@ -165,38 +170,38 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   // Register method
   const register = async (userData: RegisterFormData): Promise<AuthResult> => {
+    console.log("Registration attempt for:", userData.email);
     try {
       setLoading(true);
 
-      const response = await fetch(
-        "https://www.errandsplus.ng/bess_api/api/register",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            first_name: userData.first_name,
-            middle_name: userData.middle_name,
-            last_name: userData.last_name,
-            dob: userData.dob,
-            gender: userData.gender,
-            nationality: userData.nationality,
-            state_of_origin: userData.state_of_origin,
-            lga: userData.lga,
-            email: userData.email,
-            phone: userData.phone,
-            password: userData.password,
-            street: userData.street,
-            city: userData.city,
-            province: userData.province,
-            country: userData.country,
-            preferred_modes: userData.preferred_modes,
-          }),
-        }
-      );
+      // Use API proxy to avoid CORS issues
+      const response = await fetch("/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          first_name: userData.first_name,
+          middle_name: userData.middle_name,
+          last_name: userData.last_name,
+          dob: userData.dob,
+          gender: userData.gender,
+          nationality: userData.nationality,
+          state_of_origin: userData.state_of_origin,
+          lga: userData.lga,
+          email: userData.email,
+          phone: userData.phone,
+          password: userData.password,
+          street: userData.street,
+          city: userData.city,
+          province: userData.province,
+          country: userData.country,
+          preferred_modes: userData.preferred_modes,
+        }),
+      });
 
       const data = await response.json();
+      console.log("Registration API response:", data.status);
 
       return {
         success: data.status === "success",
@@ -216,13 +221,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   // Logout method
   const logout = (): void => {
+    console.log("Logging out user");
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     setUser(null);
-    window.location.href = "/login";
+    
+    // Use direct navigation to avoid router issues
+    if (typeof window !== 'undefined') {
+      window.location.href = "/login";
+    }
   };
 
-  // Check if user is authenticated - with improved safety
+  // Check if user is authenticated
   const isAuthenticated = (): boolean => {
     // Safety check for SSR
     if (typeof window === 'undefined') {
@@ -235,6 +245,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     console.log("Authentication check:", { 
       hasUser: !!user, 
       hasToken: !!token,
+      userEmail: user?.email || 'none',
       isAuthenticated: authState 
     });
     
@@ -251,7 +262,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     isAuthenticated,
   };
 
-  // Only render children after loading is complete
   return (
     <AuthContext.Provider value={value}>
       {children}
