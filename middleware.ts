@@ -11,18 +11,20 @@ export function middleware(request: NextRequest) {
                       path.includes('.') || // Static files like images
                       path.startsWith('/_next');
 
-  // Check for the token in cookies
-  const token = request.cookies.get('token')?.value;
-  const isAuthenticated = !!token;
-
-  // IMPORTANT: Only handle protected routes
-  // Do NOT redirect login/register pages regardless of auth status
-  if (!isPublicPath && !isAuthenticated) {
-    // Redirect to login if accessing protected route without auth
-    return NextResponse.redirect(new URL('/login', request.url));
+  if (!isPublicPath && 
+      path !== '/login' && 
+      path !== '/dashboard') {
+    
+    const token = request.cookies.get('token')?.value;
+    const isAuthenticated = !!token;
+    
+    if (!isAuthenticated) {
+      // Redirect to login if accessing protected route without auth
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
   }
-
-  // Let all other paths pass through
+  
+  // Let all requests pass through otherwise
   return NextResponse.next();
 }
 
