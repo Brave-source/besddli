@@ -37,7 +37,7 @@ export default function AboutPage() {
                 Connecting our global family for the development of Benue State
               </p>
               <a href="/joinUs">
-              <Button variant="primary" rounded="full" className="px-20 py-3">
+              <Button variant="primary" rounded="full" className="px-8 py-3">
                 Join Us
               </Button>
               </a>
