@@ -2,6 +2,7 @@
 
 import React, { ElementType, ComponentPropsWithoutRef } from "react";
 import Link from "next/link";
+import { twMerge } from "tailwind-merge";
 
 // Define a polymorphic component type
 type PolymorphicProps<E extends ElementType = ElementType, P = object> = P & {
@@ -64,8 +65,15 @@ const Button = <E extends ElementType = "button">({
   // Width styles
   const widthStyles = fullWidth ? "w-full" : "";
 
-  // Combine all styles
-  const buttonStyles = `${baseStyles} ${variantStyles[variant]} ${roundedStyles[rounded]} ${sizeStyles[size]} ${widthStyles} ${className}`;
+ // Use tailwind-merge to ensure className overrides work
+ const buttonStyles = twMerge(
+  baseStyles,
+  variantStyles[variant],
+  roundedStyles[rounded],
+  sizeStyles[size],
+  widthStyles,
+  className
+);
 
   // Determine the component to render
   const Component = as || ((href ? Link : "button") as ElementType);
