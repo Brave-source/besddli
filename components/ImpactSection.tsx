@@ -5,7 +5,7 @@ import { useRef, useState, useEffect, useCallback } from 'react';
 import SectionHeading from './SectionHeading';
 
 const ImpactSection = () => {
-  // Impact data matching your reference
+  // Impact data 
   const impactStats = [
     {
       value: "10,000+",
@@ -80,7 +80,7 @@ const ImpactSection = () => {
             {impactStats.map((stat, index) => (
               <div 
                 key={index}
-                className="snap-center flex-shrink-0 w-65 bg-white p-8 rounded-xl shadow-md text-center px-8"
+                className="snap-center flex-shrink-0 w-65 bg-white p-8 rounded-xl shadow-md text-center px-8 mb-2"
               >
                 
                 <p className="text-3xl font-bold text-green-800 mb-4">
@@ -97,7 +97,7 @@ const ImpactSection = () => {
           {showLeftArrow && (
             <button
               onClick={handlePrev}
-              className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg transition-all z-10"
+              className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg transition-all z-8"
               aria-label="Previous stat"
             >
               <svg className="w-6 h-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -109,7 +109,7 @@ const ImpactSection = () => {
           {showRightArrow && (
             <button
               onClick={handleNext}
-              className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg transition-all z-10"
+              className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg transition-all z-8"
               aria-label="Next stat"
             >
               <svg className="w-6 h-6 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
