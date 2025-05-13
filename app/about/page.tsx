@@ -3,8 +3,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import CoreValues from '@/components/CoreValues';
-import ImpactSection from '@/components/ImpactSection';
+import CoreValues from '@/components/AboutUsPage/CoreValues';
+import ImpactSection from '@/components/AboutUsPage/ImpactSection';
 import CallToAction from "@/components/CallToAction";
 import SectionHeading from '@/components/SectionHeading';
 import Button from '@/components/Button';
@@ -34,12 +34,10 @@ export default function AboutPage() {
               </h1>
               <p className="text-md text-white/90 mb-12">
                 Connecting our global family for the development of Benue State
-              </p>
-              <a href="/joinUs">
-              <Button variant="primary" rounded="full" className="px-14 py-3">
+              </p> 
+              <Button variant="primary" href="/join-us" rounded="full" className="px-14 py-3">
                 Join Us
               </Button>
-              </a>
             </div>
           </div>
         </section>
@@ -53,7 +51,9 @@ export default function AboutPage() {
               </div>
                 <div className="space-y-4">
                   <p className="text-gray-700 text-base leading-relaxed">
-                    The Benue State Directorate for Diaspora Linkages and Investments (BESDDLI) stands as a vanguard of innovative governance, bridging continents and generations to unlock unprecedented growth opportunities for our beloved state. Established under the visionary leadership of Governor Rev. Fr. Hyacinth Alia, we are not merely a government agency, but a dynamic catalyst for transformative change.
+                    The Benue State Directorate for Diaspora Linkages and Investments (BESDDLI) stands as a vanguard of innovative governance, 
+                    bridging continents and generations to unlock unprecedented growth opportunities for our beloved state. Established under the visionary leadership of Governor Rev. Fr. Hyacinth Alia, 
+                    we are not merely a government agency, but a dynamic catalyst for transformative change.
                   </p>
               
                 <div className="flex items-center space-x-4 pt-2">

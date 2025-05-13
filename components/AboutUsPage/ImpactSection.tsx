@@ -2,7 +2,7 @@
 'use client';
 
 import { useRef, useState, useEffect, useCallback } from 'react';
-import SectionHeading from './SectionHeading';
+import SectionHeading from '../SectionHeading';
 
 const ImpactSection = () => {
   // Impact data 

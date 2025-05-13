@@ -3,7 +3,7 @@
 
 import { useRef, useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
-import SectionHeading from './SectionHeading';
+import SectionHeading from '../SectionHeading';
 
 const CoreValues = () => {
   const values = [
