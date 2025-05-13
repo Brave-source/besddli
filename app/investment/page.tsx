@@ -5,10 +5,10 @@ import Image from 'next/image';
 import Button from '@/components/Button';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { SectorCard } from "@/components/SectorCard";
-import type { SectorCardProps } from "@/components/SectorCard";
-import { CategoryCard } from "@/components/CategoryCard";
-import { FilterSortBar } from "@/components/FilterSortBar";
+import { SectorCard } from "@/components/InvestmentPage/SectorCard";
+import type { SectorCardProps } from "@/components/InvestmentPage/SectorCard";
+import { CategoryCard } from "@/components/InvestmentPage/CategoryCard";
+import { FilterSortBar } from "@/components/InvestmentPage/FilterSortBar";
 import { Building2, Sprout, Plane, Sun, Scale, HandCoins, Star, LineChart, Globe } from "lucide-react";
 import  SectionHeading  from "@/components/SectionHeading";
 import TestimonialCard from "@/components/TestimonialCard";
@@ -239,10 +239,10 @@ return (
                     Join us in building sustainable growth and development <br/> through strategic investments and diaspora partnerships.
                   </p>
                  <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-4">
-                    <Button variant="primary" className="px-14 py-3 font-semibold">
+                    <Button variant="primary" href="/explore-opportunities" className="px-14 py-3 font-semibold">
                        Explore Opportunities
                     </Button>
-                    <Button variant="primary" className="focus:ring-white bg-yellow-400 px-12 py-3 hover:bg-yellow-300 text-green-900 font-semibold transition">
+                    <Button variant="primary" href="/get-investment-support" className="focus:ring-white bg-yellow-400 px-12 py-3 hover:bg-yellow-300 text-green-900 font-semibold transition">
                        Get Investment Support
                     </Button>
                  </div>
@@ -250,6 +250,8 @@ return (
               </div>
         </section>
 
+
+             {/* Why Invest in Benue Section */}
              <section className="py-12 bg-white">
                     <div className="container mx-auto px-4 max-w-5xl">
                       <SectionHeading className='tracking-tight'>Why Invest in Benue?</SectionHeading>                 
@@ -262,8 +264,9 @@ return (
                         </div>
                     </div>
              </section>
+
     
-  
+        {/* Top Investment Sector Section */}
         <section className="py-16 px-4 bg-gray-100">
           <SectionHeading className='tracking-tight'>Top Investment Sector</SectionHeading>
             {/* Navigation Arrows for Category Cards */}
@@ -327,6 +330,8 @@ return (
             </div>
         </section>
 
+
+      {/* Our 3-Step Investment Success Plan Section */}
       <section className="py-16 px-6 bg-white">
         <div className="max-w-6xl mx-auto">
           <SectionHeading>Our 3-Step Investment Success Plan</SectionHeading>
@@ -398,6 +403,7 @@ return (
       </section>
 
 
+    {/* Investment Idea Section */}
     <section className="bg-gray-100 py-16 px-6">
       <div className="max-w-6xl mx-auto flex flex-col lg:flex-row lg:items-stretch gap-8">
         {/* Text Column */}
@@ -454,6 +460,8 @@ return (
       </div>
     </section>
 
+
+     {/* We Are Always There to Support Section */}
     <section className="py-20 px-6 bg-white">
       <div className="max-w-6xl mx-auto text-center mb-12">
         <SectionHeading className="mb-4">
@@ -532,6 +540,7 @@ return (
             ]}
           />
 
+
           {/* FAQs Section */}
           <section className="bg-gray-100 py-20 px-4 md:px-12 lg:px-24">
             <div className="max-w-7xl mx-auto">
@@ -575,6 +584,8 @@ return (
             </div>
           </section>
 
+
+        {/* Take the First Step Today Section */}
         <section className="bg-green-700 text-white py-16 px-6">
             <div className="max-w-6xl mx-auto text-center">
               <SectionHeading className="text-white">
